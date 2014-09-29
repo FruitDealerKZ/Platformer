@@ -36,8 +36,8 @@ public class TileMap {
 	private int colCount;
 	private int rowCount;
 	
-	private int x;
-	private int y;
+	private double x;
+	private double y;
 	private int xmin;
 	private int ymin;
 	private int xmax;
@@ -60,8 +60,8 @@ public class TileMap {
 			colCount = Integer.parseInt(reader.readLine());
 			rowCount = Integer.parseInt(reader.readLine());
 			
-			ymin = Board.WIDTH - colCount * tileWidth;
-			xmin = Board.HEIGHT - rowCount * tileHeight;
+			ymin = Board.HEIGHT - rowCount * tileWidth;
+			xmin = Board.WIDTH - colCount * tileHeight;
 			
 			map = new int[rowCount][colCount];
 			
@@ -81,13 +81,13 @@ public class TileMap {
 	}
 	
 	public void setPosition(int x, int y) {
-		this.x += (x - this.x) * 0.07;
+		System.out.println("dif = " + (x - this.x));
+		System.out.println("x = " + this.x);
+		this.x += (x - this.x);
 		//this.y += y - this.y;
 		fixBounds();
-		System.out.println("x = " + this.x);
-		System.out.println("col = " + rowOffset);
-		rowOffset = -this.y / tileHeight;
-		colOffset = -this.x / tileWidth;
+		rowOffset = -(int)this.y / tileHeight;
+		colOffset = -(int)this.x / tileWidth;
 	}
 	
 	private void fixBounds() {
@@ -99,8 +99,11 @@ public class TileMap {
 	
 	public void draw(Graphics2D g) {
 		for(int i = rowOffset; i < rowOffset + rowOnScreen; i++) {
-			for(int j = colOffset; j < colOffset + colOnScreen; j++) {
-				g.drawImage(tiles.get(map[i][j]), x + j * tileWidth, y + i * tileHeight, tileWidth, tileHeight, null);
+			for(int j = colOffset; j < colOffset + colOnScreen + 1; j++) {
+				
+				if(j == map[i].length)
+					break;
+				g.drawImage(tiles.get(map[i][j]), (int)x + j * tileWidth, (int)y + i * tileHeight, tileWidth, tileHeight, null);
 			}
 		}
 	}
