@@ -2,7 +2,6 @@ package util;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
 
 import javax.imageio.ImageIO;
 
@@ -20,7 +19,7 @@ public class Sprite {
 	
 	public Sprite(String path, int height, int width) {
 		try {
-			sprite = ImageIO.read(new URL(path));
+			sprite = ImageIO.read(getClass().getResourceAsStream(path));
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -36,5 +35,13 @@ public class Sprite {
 		BufferedImage image = sprite.getSubimage(col * width, row * height, width, height);
 		
 		return image;
+	}
+	
+	public void setRow(int row) {
+		this.row = row;
+	}
+	
+	public void setCol(int col) {
+		this.col = col;
 	}
 }

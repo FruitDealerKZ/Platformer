@@ -10,11 +10,9 @@ public class MenuState implements GameState {
 	
 	private String[] options = {"Game", "Settings", "Exit"};
 	private int currentOption = 0;
-	private Color color;
 	private GameStateManager gsm;
 	
 	public MenuState(GameStateManager gsm) {
-		color = java.awt.Color.RED;
 		this.gsm = gsm;
 	}
 	
@@ -25,11 +23,12 @@ public class MenuState implements GameState {
 	public void draw(Graphics2D g) {
 		int x = Board.WIDTH / 2 - 10;
 		int y = Board.HEIGHT / 2;
-		Color currentColor = g.getColor();
-		
+		Color currentColor = Color.BLACK;
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, Board.WIDTH, Board.HEIGHT);
 		for (int i = 0; i < options.length; i++) {
 			if(i == currentOption)
-				g.setColor(color);
+				g.setColor(Color.GREEN);
 			else
 				g.setColor(currentColor);
 			
