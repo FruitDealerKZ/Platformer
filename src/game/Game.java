@@ -14,5 +14,7 @@ public class Game {
 		frame.setResizable(false);
 		frame.pack();
 		frame.setVisible(true);
+		
+		System.out.println();
 	}
 }
