@@ -21,7 +21,7 @@ public class Level implements GameState {
 	}
 	
 	public void update() {
-		player.update();		
+		player.update();
 		map.setPosition(Board.WIDTH / 2 - player.getX(), Board.HEIGHT / 2 - player.getY());
 	}
 

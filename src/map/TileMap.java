@@ -81,9 +81,7 @@ public class TileMap {
 	}
 	
 	public void setPosition(int x, int y) {
-		System.out.println("dif = " + (x - this.x));
-		System.out.println("x = " + this.x);
-		this.x += (x - this.x);
+		this.x = x;
 		//this.y += y - this.y;
 		fixBounds();
 		rowOffset = -(int)this.y / tileHeight;
@@ -111,6 +109,9 @@ public class TileMap {
 	public void update() {
 		
 	}
+	
+	public int getX() { return (int)x; }
+	public int getY() { return (int)y; }
 	
 	public TileCollisionType getCollisionType(int x, int y) {
 		int col = x / tileWidth;

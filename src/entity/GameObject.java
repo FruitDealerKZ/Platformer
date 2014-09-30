@@ -2,10 +2,11 @@ package entity;
 
 import java.awt.Graphics2D;
 
+import util.Sprite;
 import map.TileMap;
 import static map.TileMap.TileCollisionType.*;
 
-public abstract class GameObject {
+public class GameObject {
 	/*Current position on the map*/
 	protected int x;
 	protected int y;
@@ -18,7 +19,9 @@ public abstract class GameObject {
 	private int width;
 	
 	/*Indicates whether object on the ground*/
-	private boolean onGround;
+	private boolean falling;
+	
+	protected Sprite sprite;
 	
 	/*Current map*/
 	private TileMap map;
@@ -27,10 +30,17 @@ public abstract class GameObject {
 		this.map = map;
 		this.height = height;
 		this.width = width;
+		
+		falling = true;
 	}
 	
-	public abstract void draw(Graphics2D g);
-	public abstract void update();
+	public void draw(Graphics2D g) {
+		g.drawImage(sprite.getImage(), x + map.getX() - width / 2, y, 64, 64, null);
+	}
+
+	public void update() {
+		move();
+	}
 	
 	public void setPosition(int x, int y) {
 		this.x = x;
@@ -54,10 +64,8 @@ public abstract class GameObject {
 	public int getY() { return y; }
 	
 	private void calculateNextPosition() {
-		
 		if(deltaX > 0) {
-			int tmpX = x + deltaX + width;
-			
+			int tmpX = x + deltaX + width / 2;
 			if(map.getCollisionType(tmpX, y) != BLOCKED) {
 				x += deltaX;
 			}
@@ -66,8 +74,7 @@ public abstract class GameObject {
 			}
 		}
 		if(deltaX < 0) {
-			int tmpX = x + deltaY;
-			
+			int tmpX = x + deltaX - width / 2;
 			if(map.getCollisionType(tmpX, y) != BLOCKED) {
 				x += deltaX;
 			}
@@ -75,18 +82,19 @@ public abstract class GameObject {
 				deltaX = 0;
 			}
 		}
-		
-		if(!onGround) {
-			if(deltaY > 0) {
-				int tmpY = y + deltaY + height;
-				if(map.getCollisionType(0, tmpY) != BLOCKED) {
-					y += deltaY;
-				}
-				else {
-					deltaY = 0;
-					onGround = true;
-				}
+		if(falling) {
+			int tmpY = y + deltaY + height;
+			if(map.getCollisionType(x, tmpY) != BLOCKED) {
+				y += deltaY;
+			}
+			else {
+				y += deltaY - (y + deltaY) % 32;
+				deltaY = 0;
+				falling = false;
 			}
 		}
+	}
+	
+	private void checkCollisions() {
 	}
 }
