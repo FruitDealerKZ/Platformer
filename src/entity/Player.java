@@ -20,6 +20,11 @@ public class Player extends GameObject {
 		setHorizontalVector(2);
 	}
 	
+	public void jump() {
+		if(canJump())
+			jumping = true;
+	}
+	
 	public void stop() {
 		setHorizontalVector(0);
 	}

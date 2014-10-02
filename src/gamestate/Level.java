@@ -38,6 +38,9 @@ public class Level implements GameState {
 		if(key == KeyEvent.VK_RIGHT) {
 			player.moveRight();
 		}
+		if(key == KeyEvent.VK_SPACE) {
+			player.jump();
+		}
 	}
 
 	public void keyReleased(int key) {
