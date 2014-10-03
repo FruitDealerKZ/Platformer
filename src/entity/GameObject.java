@@ -12,12 +12,19 @@ public class GameObject {
 	protected int x;
 	protected int y;
 	
+	protected boolean left;
+	protected boolean right;
+	
 	private int deltaX;
 	private int deltaY;
+	
+	private int curDeltaX;
 	
 	/*Object size*/
 	private int height;
 	private int width;
+	
+	private int tileSize;
 	
 	/*Jump characteristics*/
 	private int jumpHeight = 160;
@@ -33,16 +40,17 @@ public class GameObject {
 	/*Current map*/
 	private TileMap map;
 	
-	public GameObject(int height, int width, TileMap map) {
+	public GameObject(int height, int width, int tileSize, TileMap map) {
 		this.map = map;
 		this.height = height;
 		this.width = width;
+		this.tileSize = tileSize;
 		
 		falling = true;
 	}
 	
 	public void draw(Graphics2D g) {
-		g.drawImage(sprite.getImage(), x + map.getX() - width / 2, y, 64, 64, null);
+		g.drawImage(sprite.getImage(), x + map.getX() - width / 2, y, tileSize, tileSize, null);
 	}
 
 	public void update() {
@@ -73,22 +81,16 @@ public class GameObject {
 	private void calculateNextPosition() {
 		checkCollisions();
 		
-		if(deltaX > 0) {
-			int tmpX = x + deltaX + width / 2;
-			if(map.getCollisionType(tmpX, y) != BLOCKED) {
-				x += deltaX;
-			}
-			else {
-				deltaX = 0;
-			}
+		if(right) {
+			x += curDeltaX;
 		}
-		if(deltaX < 0) {
-			int tmpX = x + deltaX - width / 2;
+		if(left) {
+			int tmpX = x - curDeltaX - width / 2;
 			if(map.getCollisionType(tmpX, y) != BLOCKED) {
-				x += deltaX;
+				x -= curDeltaX;
 			}
 			else {
-				deltaX = 0;
+				curDeltaX = 0;
 			}
 		}
 		if(falling) {
@@ -131,7 +133,6 @@ public class GameObject {
 	}
 	
 	private void checkCollisions() {
-		
 		/*Checks if object can stay on the ground*/
 		if(!falling) {
 			int ray = 1;
@@ -144,23 +145,24 @@ public class GameObject {
 			}
 		}
 		/*Checks if object can go to the right*/
-		if(deltaX > 0) {
-			Point rightTopRay = new Point(x + width / 2 + deltaX, y  - height / 2);
+		if(right) {
 			Point rightBottomRay = new Point(x + width / 2 + deltaX, y + height / 2);
-
-			if(map.getCollisionType(rightTopRay.x, rightTopRay.y) == BLOCKED
-					|| map.getCollisionType(rightBottomRay.x, rightBottomRay.y) == BLOCKED)
-				deltaX = 0;
+			Point rightCenterRay = new Point(x + width / 2 + deltaX, y);
+			if(map.getCollisionType(rightBottomRay.x, rightBottomRay.y) == BLOCKED
+					|| map.getCollisionType(rightCenterRay.x, rightCenterRay.y) == BLOCKED) {
+				curDeltaX = 0;
+			}
+			else
+				curDeltaX = deltaX;
 		}
 		
 		/*Checks if object can go to the left*/
-		if(deltaX < 0) {
-			Point rightTopRay = new Point(x - width / 2 + deltaX, y  - height / 2);
-			Point rightBottomRay = new Point(x - width / 2 + deltaX, y + height / 2);
-
-			if(map.getCollisionType(rightTopRay.x, rightTopRay.y) == BLOCKED
-					|| map.getCollisionType(rightBottomRay.x, rightBottomRay.y) == BLOCKED)
-				deltaX = 0;
+		if(left) {
+			Point rightBottomRay = new Point(x - width / 2 - deltaX, y + height / 2);
+			if(map.getCollisionType(rightBottomRay.x, rightBottomRay.y) == BLOCKED)
+				curDeltaX = 0;
+			else
+				curDeltaX = deltaX;
 		}
 	}
 }

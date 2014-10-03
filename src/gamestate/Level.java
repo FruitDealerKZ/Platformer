@@ -33,10 +33,10 @@ public class Level implements GameState {
 
 	public void keyPressed(int key) {
 		if(key == KeyEvent.VK_LEFT) {
-			player.moveLeft();
+			player.moveLeft(true);
 		}
 		if(key == KeyEvent.VK_RIGHT) {
-			player.moveRight();
+			player.moveRight(true);
 		}
 		if(key == KeyEvent.VK_SPACE) {
 			player.jump();
@@ -44,8 +44,11 @@ public class Level implements GameState {
 	}
 
 	public void keyReleased(int key) {
-		if(key == KeyEvent.VK_LEFT || key == KeyEvent.VK_RIGHT) {
-			player.stop();
+		if(key == KeyEvent.VK_LEFT) {
+			player.moveLeft(false);
+		}
+		if(key == KeyEvent.VK_RIGHT) {
+			player.moveRight(false);
 		}
 	}
 }
