@@ -8,7 +8,7 @@ public class Player extends GameObject {
 	public Player(TileMap map) {
 		super(64, 64, 64, map);
 		setPosition(100, 100);
-		setVector(3, 6);
+		setVector(3, 5);
 		sprite = new Sprite("/sprites/player/player.png", 64, 64);
 	}
 	
