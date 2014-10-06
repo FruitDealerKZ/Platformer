@@ -7,7 +7,7 @@ public class Player extends GameObject {
 	
 	public Player(TileMap map) {
 		super(64, 64, 64, map);
-		setPosition(100, 100);
+		setPosition(300, 100);
 		setVector(3, 5);
 		sprite = new Sprite("/sprites/player/player.png", 64, 64);
 	}
@@ -18,10 +18,24 @@ public class Player extends GameObject {
 	}
 	
 	public void moveLeft(boolean flag) {
-		left = flag;
+		if(flag) {
+			acurrent = -0.3d;
+			left = true;
+			stopping = false;
+		}
+		else {
+			left = false;
+		}
 	}
 	
 	public void moveRight(boolean flag) {
-		right = flag;
+		if(flag) {
+			acurrent = 0.3d;
+			right = true;
+			stopping = false;
+		}
+		else {
+			right = false;
+		}
 	}
 }
