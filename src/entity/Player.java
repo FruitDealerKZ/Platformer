@@ -19,7 +19,7 @@ public class Player extends GameObject {
 	
 	public void moveLeft(boolean flag) {
 		if(flag) {
-			acurrent = -0.3d;
+			acurrent = -0.1d;
 			left = true;
 			stopping = false;
 		}
@@ -30,7 +30,7 @@ public class Player extends GameObject {
 	
 	public void moveRight(boolean flag) {
 		if(flag) {
-			acurrent = 0.3d;
+			acurrent = 0.1d;
 			right = true;
 			stopping = false;
 		}

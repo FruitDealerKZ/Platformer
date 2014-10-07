@@ -15,17 +15,16 @@ public class GameObject {
 	protected boolean left;
 	protected boolean right;
 	protected boolean stopping;
+	private boolean blocked;
 	
-	private int deltaX;
+	private double deltaX;
 	private int deltaY;
 	
-	private int curDeltaX;
 	private int curDeltaY;
 	
 	private double awalking = 1;
 	protected double acurrent;
 	private double vmax = 5;
-	protected double vcurrent;
 	
 	/*Object size*/
 	private int height;
@@ -88,15 +87,18 @@ public class GameObject {
 	public int getY() { return y; }
 	
 	private void calculateNextPosition() {
+		if(blocked)
+			return;
+		checkCollisions();
 		
-		vcurrent += acurrent;
+		deltaX += acurrent;
 		
-		if(Math.abs(vcurrent) > vmax) vcurrent = vmax * Math.signum(vcurrent);
-		
+		if(Math.abs(deltaX) > vmax) deltaX = vmax * Math.signum(deltaX);
+				
 		if(!left && !right) {
 			if(stopping) {
-				if((int)vcurrent == 0) {
-					vcurrent = 0;
+				if((int)deltaX == 0) {
+					deltaX = 0;
 					acurrent = 0;
 				}
 			}
@@ -107,10 +109,9 @@ public class GameObject {
 				acurrent = -acurrent;
 			}
 		}
-		
-		checkCollisions();
 
-		x += vcurrent;
+		if(!blocked)
+			x += deltaX;
 		
 		if(falling) {
 			curDeltaY = deltaY;
@@ -155,6 +156,7 @@ public class GameObject {
 	}
 	
 	private void checkCollisions() {
+		//System.out.println((x + width / 2) + " a = " + acurrent + " deltaX = " + deltaX);
 		
 		/*Checks if object can stay on the ground*/
 		if(!falling) {
@@ -170,26 +172,26 @@ public class GameObject {
 			}
 		}
 		
-		if(left) {
-			int ray = (int)Math.max(vcurrent, 1);
-			Point topRay = new Point(x - width / 2 - ray, y);
-			Point bottomRay = new Point(x - width / 2 - ray, y + height / 2);
-			
-			if(map.getCollisionType(topRay.x, topRay.y) == BLOCKED ||
-					map.getCollisionType(bottomRay.x, bottomRay.y) == BLOCKED) {
-				vcurrent = 0;
-			}
-		}
-		
-		if(right) {
-			int ray = (int)Math.max(vcurrent, 1);
+		if(deltaX > 0) {
+			int ray = (int)Math.max(deltaX, 1);
 			Point topRay = new Point(x + width / 2 + ray, y);
 			Point bottomRay = new Point(x + width / 2 + ray, y + height / 2);
 			
 			if(map.getCollisionType(topRay.x, topRay.y) == BLOCKED ||
 					map.getCollisionType(bottomRay.x, bottomRay.y) == BLOCKED) {
-				vcurrent = 0;
+				x += map.getHorizontalDistance(x + ray + width / 2);
+				System.out.println("x2 = " + x);
+				deltaX = 0;
+				acurrent = 0;
+				blocked = true;
 			}
+			else {
+				blocked = false;
+			}
+		}
+		
+		if(left) {
+			blocked = false;
 		}
 	}
 }
