@@ -119,13 +119,4 @@ public class TileMap {
 		
 		return collisionsMap.get(map[row][col]);
 	}
-	
-	public double getHorizontalDistance(int x) {		
-		if(x % 32 == 0) {
-			return 0;
-		}
-		else {
-			return 32 - x % 32;
-		}
-	}
 }

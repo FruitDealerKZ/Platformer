@@ -87,10 +87,6 @@ public class GameObject {
 	public int getY() { return y; }
 	
 	private void calculateNextPosition() {
-		if(blocked)
-			return;
-		checkCollisions();
-		
 		deltaX += acurrent;
 		
 		if(Math.abs(deltaX) > vmax) deltaX = vmax * Math.signum(deltaX);
@@ -110,6 +106,8 @@ public class GameObject {
 			}
 		}
 
+		checkCollisions();
+		
 		if(!blocked)
 			x += deltaX;
 		
@@ -173,14 +171,12 @@ public class GameObject {
 		}
 		
 		if(deltaX > 0) {
-			int ray = (int)Math.max(deltaX, 1);
-			Point topRay = new Point(x + width / 2 + ray, y);
-			Point bottomRay = new Point(x + width / 2 + ray, y + height / 2);
+			Point topRay = new Point(x + width / 2 + (int)deltaX, y);
+			Point bottomRay = new Point(x + width / 2 + (int)deltaX, y + height / 2);
 			
 			if(map.getCollisionType(topRay.x, topRay.y) == BLOCKED ||
 					map.getCollisionType(bottomRay.x, bottomRay.y) == BLOCKED) {
-				x += map.getHorizontalDistance(x + ray + width / 2);
-				System.out.println("x2 = " + x);
+				x += deltaX - (x + width / 2 + deltaX) % 32;
 				deltaX = 0;
 				acurrent = 0;
 				blocked = true;
@@ -190,8 +186,23 @@ public class GameObject {
 			}
 		}
 		
-		if(left) {
-			blocked = false;
+		if(deltaX < 0) {
+			Point topRay = new Point(x - width / 2 + (int)deltaX, y);
+			Point bottomRay = new Point(x - width / 2 + (int)deltaX, y + height / 2);
+			
+			if(map.getCollisionType(topRay.x, topRay.y) == BLOCKED ||
+					map.getCollisionType(bottomRay.x, bottomRay.y) == BLOCKED) {
+				System.out.println("x1 = " + x);
+				System.out.println("deltaX = " + deltaX);
+				x -= (x - width / 2) - ((int)(x - width / 2) / 32) * 32;
+				System.out.println("x2 = " + x);
+				deltaX = 0;
+				acurrent = 0;
+				blocked = true;
+			}
+			else {
+				blocked = false;
+			}
 		}
 	}
 }
