@@ -54,7 +54,7 @@ public class GameObject {
 		
 		acurrent = awalking;
 		
-		falling = true;
+		falling = false;
 	}
 	
 	public void draw(Graphics2D g) {
@@ -108,23 +108,8 @@ public class GameObject {
 
 		checkCollisions();
 		
-		if(!blocked)
+		if(!blocked) {
 			x += deltaX;
-		
-		if(falling) {
-			curDeltaY = deltaY;
-			Point leftBottom = new Point(x - width / 2, y + height + curDeltaY);
-			Point rightBottom = new Point(x + width / 2, y + height + curDeltaY);
-			
-			if(map.getCollisionType(leftBottom.x, leftBottom.y) != BLOCKED
-					&& map.getCollisionType(rightBottom.x, rightBottom.y) != BLOCKED) {
-				y += curDeltaY;
-			}
-			else {
-				y += curDeltaY - (y + curDeltaY) % 32;
-				curDeltaY = 0;
-				falling = false;
-			}
 		}
 		
 		if(jumping) {
@@ -153,9 +138,7 @@ public class GameObject {
 		return !falling;
 	}
 	
-	private void checkCollisions() {
-		//System.out.println((x + width / 2) + " a = " + acurrent + " deltaX = " + deltaX);
-		
+	private void checkCollisions() {		
 		/*Checks if object can stay on the ground*/
 		if(!falling) {
 			int ray = 1;
@@ -171,14 +154,13 @@ public class GameObject {
 		}
 		
 		if(deltaX > 0) {
-			Point topRay = new Point(x + width / 2 + (int)deltaX, y);
-			Point bottomRay = new Point(x + width / 2 + (int)deltaX, y + height / 2);
+			Point topRay = new Point((int)(x + width / 2 + deltaX), y);
+			Point bottomRay = new Point((int)(x + width / 2 + deltaX), y + height / 2);
 			
 			if(map.getCollisionType(topRay.x, topRay.y) == BLOCKED ||
 					map.getCollisionType(bottomRay.x, bottomRay.y) == BLOCKED) {
 				x += deltaX - (x + width / 2 + deltaX) % 32;
 				deltaX = 0;
-				acurrent = 0;
 				blocked = true;
 			}
 			else {
@@ -187,17 +169,12 @@ public class GameObject {
 		}
 		
 		if(deltaX < 0) {
-			Point topRay = new Point(x - width / 2 + (int)deltaX, y);
-			Point bottomRay = new Point(x - width / 2 + (int)deltaX, y + height / 2);
+			Point topRay = new Point((int)(x - width / 2 + deltaX), y);
+			Point bottomRay = new Point((int)(x - width / 2 + deltaX), y + height / 2);
 			
 			if(map.getCollisionType(topRay.x, topRay.y) == BLOCKED ||
 					map.getCollisionType(bottomRay.x, bottomRay.y) == BLOCKED) {
-				System.out.println("x1 = " + x);
-				System.out.println("deltaX = " + deltaX);
-				x -= (x - width / 2) - ((int)(x - width / 2) / 32) * 32;
-				System.out.println("x2 = " + x);
 				deltaX = 0;
-				acurrent = 0;
 				blocked = true;
 			}
 			else {
