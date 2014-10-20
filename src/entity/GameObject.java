@@ -19,9 +19,7 @@ public class GameObject {
 	
 	private double deltaX;
 	private int deltaY;
-	
-	private int curDeltaY;
-	
+		
 	private double awalking = 1;
 	protected double acurrent;
 	private double vmax = 5;
@@ -112,7 +110,13 @@ public class GameObject {
 			x += deltaX;
 		}
 		
+		if(falling) {
+			System.out.println("deltaY = " + deltaY + " y = " + y);
+			y += deltaY;
+		}
+		
 		if(jumping) {
+			System.out.println("Jumping");
 			int tmpY = y + jumpSpeed + height / 2;
 			int x1 = x - width / 2;
 			int x2 = x + width / 2;
@@ -140,16 +144,19 @@ public class GameObject {
 	
 	private void checkCollisions() {		
 		/*Checks if object can stay on the ground*/
-		if(!falling) {
-			int ray = 1;
-			Point bottomRay1 = new Point(x - width / 2, y + height + ray);
-			Point bottomRay2 = new Point(x + width / 2, y + height + ray);
-			Point bottomRayCenter = new Point(x, 		y + height + ray);
+		if(deltaY > 0) {
+			Point bottomRay1 = new Point(x - width / 2, y + height + deltaY);
+			Point bottomRay2 = new Point(x + width / 2, y + height + deltaY);
+			Point bottomRayCenter = new Point(x, 		y + height + deltaY);
 			if(map.getCollisionType(bottomRay1.x, bottomRay1.y) == NON_BLOCKED
 					&& map.getCollisionType(bottomRay2.x, bottomRay2.y) == NON_BLOCKED
 					&& map.getCollisionType(bottomRayCenter.x, bottomRayCenter.y) == NON_BLOCKED) {
 				falling = true;
-				curDeltaY = deltaY;
+				System.out.println("Falling Yes");
+			}
+			else {
+				falling = false;
+				System.out.println("Falling Not");
 			}
 		}
 		
